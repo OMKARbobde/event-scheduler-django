@@ -1,0 +1,191 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Event Scheduler</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+</head>
+<style>
+    body {
+        margin: 0;
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    header {
+        padding: 30px 20px;
+        text-align: center;
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    header h1 {
+        font-size: 48px;
+        margin-bottom: 10px;
+        color: white;
+        animation: fadeInDown 1s ease-out;
+    }
+
+    header p {
+        font-size: 20px;
+        color: #f4f4f4;
+    }
+
+    .container {
+        flex: 1;
+        padding: 40px 20px;
+        max-width: 900px;
+        margin: auto;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        animation: fadeInUp 1s ease-out;
+    }
+
+    #calendar {
+        max-width: 100%;
+        margin: 20px auto;
+        background-color: white;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        /*height: 600px; /* ✅ force height */
+}
+
+
+    .btn {
+        display: inline-block;
+        padding: 14px 24px;
+        margin-top: 20px;
+        background-color: #007BFF;
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        border-radius: 30px;
+        transition: 0.3s ease;
+    }
+
+    .btn:hover {
+        background-color: #0056b3;
+        transform: translateY(-2px);
+    }
+
+    footer {
+        text-align: center;
+        padding: 15px;
+        color: #f0f0f0;
+        font-size: 14px;
+    }
+
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+        header h1 {
+            font-size: 36px;
+        }
+        .container {
+            padding: 20px;
+        }
+    }
+</style>
+<body>
+    <header>
+        <h1>Event Scheduler</h1>
+        <p>Plan, Track & Never Miss a Beat 🎯</p>
+        <p style="margin-top: 10px;">
+            Hello, {{ user.username }} |
+            <form method="POST" action="{% url 'logout' %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" style="background: none; border: none; color: white; font-weight: bold; cursor: pointer;">
+                    Logout
+                </button>
+            </form>
+        </p>
+    </header>
+
+    <div class="container">
+        <h2>Welcome!</h2>
+        <p>This is your personal space to schedule and manage your important events, appointments, and reminders. Stay organized and ahead of time — one event at a time!</p>
+        <a href="{% url 'create_event' %}" class="btn">+ Create New Event</a>
+
+        <h2 style="margin-top: 40px;">Event Calendar</h2>
+        <div id="calendar"></div>
+    </div>
+
+    <!-- Event List -->
+    <h2 style="margin-top: 40px;">Scheduled Events</h2>
+    <div style="margin-top: 20px;">
+        {% if events %}
+        <ul style="list-style: none; padding: 0;">
+            {% for event in events %}
+                <li style="background: #fff; padding: 15px 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 15px;">
+                    <h3 style="margin: 0;">{{ event.title }}</h3>
+                    <p style="margin: 5px 0;"><strong>Date:</strong> {{ event.date }} | <strong>Time:</strong> {{ event.time }}</p>
+                    <p style="margin: 5px 0;">{{ event.description }}</p>
+                    <form action="{% url 'delete_event' event.id %}" method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" style="
+                            background-color: #e74c3c;
+                            color: white;
+                            padding: 8px 14px;
+                            border: none;
+                            border-radius: 6px;
+                            cursor: pointer;
+                            font-size: 14px;
+                            margin-top: 10px;
+                        ">Delete</button>
+                    </form>
+                    <a href="{% url 'edit_event' event.id %}" style="
+                        background-color: #ffc107;
+                        color: white;
+                        padding: 8px 14px;
+                        border-radius: 6px;
+                        text-decoration: none;
+                        font-size: 14px;
+                        margin-left: 10px;
+                    ">Edit</a>
+                </li>
+            {% empty %}
+                <li>No events yet.</li>
+            {% endfor %}
+        </ul>
+        
+        {% else %}
+            <p>No events scheduled yet.</p>
+        {% endif %}
+    </div>
+
+    <footer>
+        Made with ❤️ using Django | © 2025
+    </footer>
+
+     <!-- Scripts -->
+     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
+
+     <script id="event-data" type="application/json">
+        {{ event_data|json_script:"event-data" }}
+    </script>
+    
+    <script src="{% static 'js/calendar.js' %}"></script>
+    
+     </script>
+ 
+</body>
+</html>

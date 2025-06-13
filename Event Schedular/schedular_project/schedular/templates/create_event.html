@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Event</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        form {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 500px;
+            animation: fadeSlideIn 1s ease forwards;
+            transform: translateY(20px);
+            opacity: 0;
+        }
+        @keyframes fadeSlideIn {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            transition: border-color 0.3s ease;
+        }
+        input:focus, textarea:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        button {
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+            transform: scale(1.03);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 28px;
+            animation: fadeInText 1.2s ease;
+        }
+        @keyframes fadeInText {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @media (max-width: 600px) {
+            form {
+                padding: 20px;
+                margin: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h2>Create Event</h2>
+    <form method="post">
+    {% csrf_token %}
+    <label>Title:</label>
+    <input type="text" name="title" required><br>
+
+    <label>Description:</label>
+    <textarea name="description"></textarea><br>
+
+    <label>Date:</label>
+    <input type="date" name="date" required><br>
+
+    <label>Time:</label>
+    <input type="time" name="time" required><br>
+
+    <button type="submit">Add Event</button>
+    </form>
+
+</body>
+</html>
